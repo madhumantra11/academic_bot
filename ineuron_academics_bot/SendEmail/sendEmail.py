@@ -6,7 +6,7 @@ from config_reader import ConfigReader
 
 class EmailSender:
 
-    def send_email_to_student(self, recepient_email, message):
+    def send_email_to_student(self, cust_email, message):
         try:
             self.config_reader=ConfigReader()
             self.configuration=self.config_reader.read_config()
@@ -15,10 +15,10 @@ class EmailSender:
             self.msg = MIMEMultipart()
 
             # storing the senders email address
-            self.msg['From'] = self.configuration['SENDER_EMAIL']
+            self.msg['Madhu'] = self.configuration['SENDER_EMAIL']
 
             # storing the receivers email address
-            self.msg['To'] = ",".join(recepient_email)
+            self.msg['To'] = ",".join(cust_email)
 
 
             # storing the subject
@@ -43,13 +43,13 @@ class EmailSender:
             self.smtp.starttls()
 
             # Authentication
-            self.smtp.login(self.msg['From'], self.configuration['PASSWORD'])
+            self.smtp.login(self.msg['Madhu'], self.configuration['PASSWORD'])
 
             # Converts the Multipart msg into a string
             self.text = self.msg.as_string()
 
             # sending the mail
-            self.smtp.sendmail(self.msg['From'] , recepient_email, self.text)
+            self.smtp.sendmail(self.msg['Madhu'] , cust_email, self.text)
 
 
 
@@ -67,7 +67,7 @@ class EmailSender:
                 self.msg = MIMEMultipart()
 
                 # storing the senders email address
-                self.msg['From'] = self.configuration['SENDER_EMAIL']
+                self.msg['Madhu'] = self.configuration['SENDER_EMAIL']
 
 
                 # storing the subject
@@ -95,7 +95,7 @@ class EmailSender:
                 self.smtp.starttls()
 
                 # Authentication
-                self.smtp.login(self.msg['From'], self.configuration['PASSWORD'])
+                self.smtp.login(self.msg['Madhu'], self.configuration['PASSWORD'])
 
                 # Converts the Multipart msg into a string
                 self.text = self.msg.as_string()
@@ -104,7 +104,7 @@ class EmailSender:
 
                 self.support_team_email = self.configuration['SALES_TEAM_EMAIL']
 
-                self.smtp.sendmail(self.msg['From'], self.support_team_email, self.text)
+                self.smtp.sendmail(self.msg['Madhu'], self.support_team_email, self.text)
 
                 # terminating the session
                 self.smtp.quit()
