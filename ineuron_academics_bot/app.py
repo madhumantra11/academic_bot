@@ -1,6 +1,6 @@
-from flask import Flask, request, make_response
 import json
 import os
+from flask import Flask, request, make_response
 from flask_cors import cross_origin
 from SendEmail.sendEmail import EmailSender
 from logger import logger
@@ -8,7 +8,9 @@ from email_templates import template_reader
 
 app = Flask(__name__)
 
-
+#@app.route('/', methods=['GET'])
+#def homepage():
+    #return "Welcome"
 
 # geting and sending response to dialogflow
 @app.route('/webhook', methods=['POST'])
@@ -18,7 +20,7 @@ def webhook():
     req = request.get_json(silent=True, force=True)
 
     #print("Request:")
-    #print(json.dumps(req, indent=4))
+    print(json.dumps(req, indent=4))
 
     res = processRequest(req)
 
@@ -32,7 +34,6 @@ def webhook():
 # processing the request from dialogflow
 def processRequest(req):
     log = logger.Log()
-
     sessionID=req.get('responseId')
 
 
@@ -46,7 +47,7 @@ def processRequest(req):
     cust_email=parameters.get("cust_email")
     course_name= parameters.get("course_name")
     intent = result.get("intent").get('displayName')
-    if (intent=='course_selection'):
+    if (intent=='course-selection'):
 
         email_sender=EmailSender()
         template= template_reader.TemplateReader()
@@ -55,8 +56,9 @@ def processRequest(req):
         email_file_support = open("email_templates/support_team_Template.html", "r")
         email_message_support = email_file_support.read()
         email_sender.send_email_to_support(cust_name=cust_name,cust_contact=cust_contact,cust_email=cust_email,course_name=course_name,body=email_message_support)
-        fulfillmentText="We have sent the course syllabus and other relevant details to you via email. An email has been sent to the Support Team with your contact information, you'll be contacted soon. Do you have further queries?"
+        fulfillmentText="We have sent the course syllabus and other related details to you via email. an email has been sent to the Support team with your contact information. You will be contacted soon. do you have any further queries?"
         log.write_log(sessionID, "Bot Says: "+fulfillmentText)
+
         return {
             "fulfillmentText": fulfillmentText
         }
@@ -68,3 +70,6 @@ if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     print("Starting app on port %d" % port)
     app.run(debug=False, port=port, host='0.0.0.0')
+
+##if __name__ == '__main__':
+    ##app.run(port=5000, debug=True) # running the app on local machine
